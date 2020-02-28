@@ -57,10 +57,15 @@ public:
   void remove(uint32_t serial_number);
   std::vector<License> snapshot() const;
 
-protected:
-  void save_locked() const;
+  static std::shared_ptr<const License> create_license_pc(
+      uint32_t serial_number, const char* access_key, const char* password);
+  static std::shared_ptr<const License> create_license_gc(
+      uint32_t serial_number, const char* access_key, const char* password);
+  static std::shared_ptr<const License> create_license_bb(
+      uint32_t serial_number, const char* username, const char* password);
 
-  mutable rw_lock lock;
+protected:
+  void save() const;
 
   std::string filename;
   std::unordered_map<std::string, std::shared_ptr<License>> bb_username_to_license;

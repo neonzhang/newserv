@@ -30,11 +30,18 @@
 
 
 
-void send_command(std::shared_ptr<Client> c, uint16_t command, uint32_t flag = 0,
+void send_command(std::shared_ptr<Client> c, uint16_t command,
+    uint32_t flag = 0, const void* data = NULL, size_t size = 0);
+
+void send_command_excluding_client(std::shared_ptr<Lobby> l,
+    std::shared_ptr<Client> c, uint16_t command, uint32_t flag = 0,
     const void* data = NULL, size_t size = 0);
 
 void send_command(std::shared_ptr<Lobby> l, uint16_t command, uint32_t flag = 0,
     const void* data = NULL, size_t size = 0);
+
+void send_command(std::shared_ptr<ServerState> s, uint16_t command,
+    uint32_t flag = 0, const void* data = NULL, size_t size = 0);
 
 template <typename TARGET, typename STRUCT>
 void send_command(std::shared_ptr<TARGET> c, uint16_t command, uint32_t flag,
@@ -94,8 +101,11 @@ void send_lobby_message_box(std::shared_ptr<Client> c, const char16_t* text);
 void send_ship_info(std::shared_ptr<Client> c, const char16_t* text);
 void send_text_message(std::shared_ptr<Client> c, const char16_t* text);
 void send_text_message(std::shared_ptr<Lobby> l, const char16_t* text);
+void send_text_message(std::shared_ptr<ServerState> l, const char16_t* text);
 void send_chat_message(std::shared_ptr<Client> c, uint32_t from_serial_number,
     const char16_t* from_name, const char16_t* text);
+void send_simple_mail(std::shared_ptr<Client> c, uint32_t from_serial_number,
+    const char16_t* from_name, const char16_t* text, size_t max_chars);
 
 template <typename TARGET>
 void send_text_message_printf(std::shared_ptr<TARGET> t, const char* format, ...) {
@@ -130,7 +140,8 @@ void send_player_leave_notification(std::shared_ptr<Lobby> l,
 void send_get_player_info(std::shared_ptr<Client> c);
 
 void send_arrow_update(std::shared_ptr<Lobby> l);
-void send_resume_game(std::shared_ptr<Lobby> l);
+void send_resume_game(std::shared_ptr<Lobby> l,
+    std::shared_ptr<Client> ready_client);
 
 enum PlayerStatsChange {
   SubtractHP = 0,
@@ -155,6 +166,7 @@ void send_create_inventory_item(std::shared_ptr<Lobby> l, std::shared_ptr<Client
 void send_destroy_item(std::shared_ptr<Lobby> l, std::shared_ptr<Client> c,
     uint32_t item_id, uint32_t amount);
 void send_bank(std::shared_ptr<Client> c);
+void send_shop(std::shared_ptr<Client> c, uint8_t shop_type);
 void send_level_up(std::shared_ptr<Lobby> l, std::shared_ptr<Client> c);
 void send_give_experience(std::shared_ptr<Lobby> l, std::shared_ptr<Client> c,
     uint32_t amount);
@@ -167,3 +179,7 @@ void send_quest_file(std::shared_ptr<Client> c, const std::string& basename,
     const std::string& contents, bool is_download_quest, bool is_ep3_quest);
 
 void send_server_time(std::shared_ptr<Client> c);
+
+void send_change_event(std::shared_ptr<Client> c, uint8_t new_event);
+void send_change_event(std::shared_ptr<Lobby> l, uint8_t new_event);
+void send_change_event(std::shared_ptr<ServerState> s, uint8_t new_event);

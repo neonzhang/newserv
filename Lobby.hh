@@ -24,8 +24,6 @@ enum LobbyFlag {
 };
 
 struct Lobby {
-  mutable rw_lock lock;
-
   uint32_t lobby_id;
 
   uint32_t min_level;
@@ -40,40 +38,38 @@ struct Lobby {
   std::unordered_map<uint32_t, PlayerInventoryItem> item_id_to_floor_item;
   uint32_t variations[0x20];
 
-  // game config 
+  // game config
   GameVersion version;
   uint8_t section_id;
   uint8_t episode;
   uint8_t difficulty;
   uint8_t mode;
-  char16_t password[36];
-  char16_t name[36];
+  char16_t password[0x24];
+  char16_t name[0x24];
+  uint32_t rare_seed;
 
-  //EP3_GAME_CONFIG* ep3; // only present if this is an Episode 3 game 
+  //EP3_GAME_CONFIG* ep3; // only present if this is an Episode 3 game
 
-  // lobby stuff 
+  // lobby stuff
   uint8_t event;
   uint8_t block;
-  uint8_t type; // number to give to PSO for the lobby number 
+  uint8_t type; // number to give to PSO for the lobby number
   uint8_t leader_id;
   uint8_t max_clients;
   uint32_t flags;
-  uint32_t loading_quest_id; // for use with joinable quests 
+  uint32_t loading_quest_id; // for use with joinable quests
   std::shared_ptr<Client> clients[12];
 
   Lobby();
 
   bool is_game() const;
 
-  void reassign_leader_on_client_departure_locked(size_t leaving_client_id);
+  void reassign_leader_on_client_departure(size_t leaving_client_id);
   size_t count_clients() const;
-  size_t count_clients_locked() const;
   bool any_client_loading() const;
 
   void add_client(std::shared_ptr<Client> c);
-  void add_client_locked(std::shared_ptr<Client> c);
   void remove_client(std::shared_ptr<Client> c);
-  void remove_client_locked(std::shared_ptr<Client> c);
 
   void move_client_to_lobby(std::shared_ptr<Lobby> dest_lobby,
       std::shared_ptr<Client> c);
@@ -84,7 +80,7 @@ struct Lobby {
   void add_item(const PlayerInventoryItem& item);
   void remove_item(uint32_t item_id, PlayerInventoryItem* item);
   size_t find_item(uint32_t item_id);
-  uint32_t generate_item_id(uint32_t client_id);
+  uint32_t generate_item_id(uint8_t client_id);
 
   void assign_item_ids_for_player(uint32_t client_id, PlayerInventory& inv);
 
