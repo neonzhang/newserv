@@ -13,7 +13,6 @@ jobs:
 #      run: ./configure
 run: git clone https://github.com/neonzhang/newserv.git
 run: cd newserv
-    - name: install phosg  
       run: git clone https://github.com/neonzhang/phosg.git
       run: sudu apt-get install cmake
       run: sudo apt-get install g++
