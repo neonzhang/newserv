@@ -9,8 +9,19 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    - name: configure
-      run: ./configure
+#    - name: configure
+#      run: ./configure
+    - name: install phosg  
+      run: git clone https://github.com/neonzhang/phosg.git
+      run: sudu apt-get install cmake
+      run: sudo apt-get install g++
+run: sudo apt-get install Python
+run: cd phosg
+run: make
+run: sudo make install
+run: cd ../
+run: sudo apt-get install libevent-dev
+
     - name: make
       run: make
     - name: make check
